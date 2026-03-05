@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+<!-- Login template. Will be used for user authentication using the base template  (in Jinja2)-->
+
+{% block content %}
+<div style="max-width: 400px; margin: 0 auto; text-align: center;">
+    <h2>Είσοδος στο Σύστημα</h2>
+    <form method="POST">
+        <label>Επιλογή Ρόλου:</label>
+        <select name="role">
+            <option value="citizen">Πολίτης</option>
+            <option value="employee">Υπάλληλος</option>
+        </select>
+
+        <label>ID Χρήστη (UserID / EmployeeID):</label>
+        <input type="text" name="userid" placeholder="π.χ. AAAA000001" required>
+
+        <label>Κωδικός (Password):</label>
+        <input type="password" name="password" placeholder="Απαιτείται μόνο για Πολίτες" >
+
+        <button type="submit" class="btn" style="width: 100%;">Σύνδεση</button>
+    </form>
+    <p style="font-size: 0.9em; color: #666; margin-top: 20px;">
+        * Για δοκιμή Πολίτη: AAAA000001 / pdfg123456 <br>
+        * Για δοκιμή Υπαλλήλου: AAAA000001 (χωρίς κωδικό)
+    </p>
+</div>
+{% endblock %}

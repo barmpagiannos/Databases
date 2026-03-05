@@ -1,0 +1,44 @@
+
+{% extends 'base.html' %}
+{% block content %}
+  <div class="card">
+    <h2>Πίνακας Υπαλλήλου: {{ user_name }}</h2>
+    <h3>Ανατεθειμένες Εργασίες</h3>
+
+    {% if assignments and assignments|length > 0 %}
+      <table>
+        <thead>
+          <tr>
+            <th>ID Αναφοράς</th>
+            <th>Περιγραφή</th>
+            <th>Οδός</th>
+            <th>Προτεραιότητα</th>
+            <th>Τρέχουσα Κατάσταση</th>
+            <th>Σχόλια Ανάθεσης</th>
+            <th>Ενέργεια</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for job in assignments %}
+            <tr>
+              <td>{{ job.IncidentID }}</td>
+              <td>{{ job.Description }}</td>
+              <td>{{ job.Street }}</td>
+              <td>{{ job.Priority }}</td>
+              <td>{{ job.Status }}</td>
+              <td>{{ job.AssignmentComments or '-' }}</td>
+              <td>
+                <a class="btn_link"  href="{{ url_for('employee_incident', incident_id=job.IncidentID)}}">Ενημέρωση Κατάστασης</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      Δεν υπάρχουν εκκρεμείς αναθέσεις.
+    {% endif %}
+  </div>
+{% endblock %}
+
+
+<!-- style="width: 100px; height: 50px;" -->

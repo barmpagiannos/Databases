@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+<!-- Citizen dashboard template using the base template (in Jinja2) -->
+
+{% block content %}
+
+<div style="margin-bottom: 20px;">
+    <h2 style="margin-bottom: 5px;">Καλωσήρθατε, {{ user_name }}</h2>
+    <span style="color: #777; font-size: 0.9rem;">Διαχείριση Αιτημάτων Πολίτη</span>
+</div>
+
+<div class="card">
+    <h3>Νέα Αναφορά Προβλήματος</h3>
+    
+    <form action="{{ url_for('create_incident') }}" method="POST">
+        <div class="form-grid">
+            
+            <div class="form-group full-width">
+                <label>Περιγραφή Προβλήματος</label>
+                <textarea name="description" required placeholder="Π.χ. Σπασμένο παγκάκι στην πλατεία..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Οδός</label>
+                <input type="text" name="street" required placeholder="Όνομα οδού">
+            </div>
+            <div class="form-group">
+                <label>Αριθμός</label>
+                <input type="number" name="street_number" placeholder="π.χ. 10">
+            </div>
+
+            <div class="form-group">
+                <label>Είδος Προβλήματος</label>
+                <select name="type_id">
+                    {% for t in types %}
+                        <option value="{{ t.TypeID }}">{{ t.TypeName }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Περιοχή (Δήμος)</label>
+                <select name="district_id">
+                    {% for d in districts %}
+                        <option value="{{ d.DistrictID }}">{{ d.DistrictName }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="full-width">
+                <button type="submit" class="btn">Υποβολή Αναφοράς</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Το Ιστορικό μου</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 40%;">Περιγραφή</th>
+                <th>Τοποθεσία</th>
+                <th>Ημερομηνία</th>
+                <th>Κατάσταση</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inc in incidents %}
+            <tr>
+                <td>{{ inc.Description }}</td>
+                <td>{{ inc.Street }}</td>
+                <td>{{ inc.SubmissionDate }}</td>
+                <td>
+                    <span class="{{ 'status-done' if inc.Status == 'ΟΛΟΚΛΗΡΩΘΗΚΕ' else 
+                                ('status-new' if inc.Status == 'NEO' else 'status-pending' if inc.Status == 'ΣΕ_ΕΞΕΛΙΞΗ' else 'status-submission') }}">
+                        {{ inc.Status }}
+                    </span>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" style="text-align: center; color: #777;">Δεν υπάρχουν καταχωρημένες αναφορές.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

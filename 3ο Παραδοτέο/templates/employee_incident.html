@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+<!-- Employee dashboard template using the base template (in Jinja2) -->
+
+{% block content %}
+<h2>Πίνακας Ελέγχου Υπαλλήλου: {{ session.get('name') }}</h2>
+
+<h3>Ανατεθειμένη Εργασία</h3>
+
+<div class="card">
+    <div style="display: flex; justify-content: space-between;">
+        <h4>ID: {{ incident.IncidentID }} - {{ incident.Description }}</h4>
+        <span style="background: #eee; padding: 5px 10px; border-radius: 4px;">Προτεραιότητα: {{ incident.Priority }}</span>
+    </div>
+    
+    <p><strong>Τοποθεσία:</strong> {{ incident.Street }}</p>
+    <p><strong>Τρέχουσα Κατάσταση:</strong> {{ incident.CurrentStatus }}</p>
+
+    {% if incident.AssignmentComments %}
+    <div style="background-color: #e3f2fd; padding: 10px; border-left: 4px solid #2196f3; margin: 10px 0; border-radius: 4px; font-size: 0.95rem;">
+        <strong>Μήνυμα από Προϊστάμενο:</strong> {{ incident.AssignmentComments }}
+    </div>
+    {% endif %}
+
+    {% if incident.CurrentStatus != 'ΟΛΟΚΛΗΡΩΘΗΚΕ' and incident.CurrentStatus != 'ΑΚΥΡΩΘΗΚΕ' %}
+    <form action="{{ url_for('update_status', incident_id=incident.IncidentID) }}" method="POST" style="background: #f9f9f9; padding: 15px; border-radius: 5px; margin-top: 15px;">
+        <label style="display: block; margin-bottom: 5px;">Ενημέρωση Κατάστασης:</label>
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+            <select name="status" style="margin: 0; flex: 1;">
+                {% if incident.CurrentStatus == 'NEO' %}
+                <option value="ΣΕ_ΑΝΑΘΕΣΗ">ΣΕ_ΑΝΑΘΕΣΗ</option>
+                <option value="ΣΕ_ΕΞΕΛΙΞΗ">ΣΕ_ΕΞΕΛΙΞΗ</option>
+                <option value="ΟΛΟΚΛΗΡΩΘΗΚΕ">ΟΛΟΚΛΗΡΩΘΗΚΕ</option>
+                <option value="ΑΚΥΡΩΘΗΚΕ">ΑΚΥΡΩΘΗΚΕ</option>
+                {% elif incident.CurrentStatus == 'ΣΕ_ΑΝΑΘΕΣΗ' %}
+                <option value="ΣΕ_ΕΞΕΛΙΞΗ">ΣΕ_ΕΞΕΛΙΞΗ</option>
+                <option value="ΟΛΟΚΛΗΡΩΘΗΚΕ">ΟΛΟΚΛΗΡΩΘΗΚΕ</option>
+                <option value="ΑΚΥΡΩΘΗΚΕ">ΑΚΥΡΩΘΗΚΕ</option>
+                {% elif incident.CurrentStatus == 'ΣΕ_ΕΞΕΛΙΞΗ' %}
+                <option value="ΟΛΟΚΛΗΡΩΘΗΚΕ">ΟΛΟΚΛΗΡΩΘΗΚΕ</option>
+                <option value="ΑΚΥΡΩΘΗΚΕ">ΑΚΥΡΩΘΗΚΕ</option>
+                {% endif %}
+            </select>
+            <input type="text" name="comments" placeholder="Σχόλια ενεργειών..." style="margin: 0; flex: 2;" required>
+            <button type="submit" class="btn" style="padding: 10px 20px; margin: 0;">Ενημέρωση</button>
+        </div>
+    </form>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card">
+    <h3>Ιστορικό ενεργειών</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Ημερομηνία Ενέργειας</th>
+                <th>Κόστος</th>
+                <th>Σχόλια Ενέργειας</th>
+                <th>Τμήμα</th>
+                <th>Είδος Ενέργειας</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for act in actions %}
+            <tr>
+                <td>{{ act.ActionDate }}</td>
+                <td>{{ act.Cost }}</td>
+                <td>{{ act.ActionComments }}</td>
+                <td>{{ act.DepartmentName }}</td>
+                <td>{{ act.ActionType }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" style="text-align: center; color: #777;">Δεν υπάρχουν καταχωρημένες Ενέργειες !</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

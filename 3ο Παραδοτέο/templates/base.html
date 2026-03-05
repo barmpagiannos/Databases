@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityOps - Δημοτική Πλατφόρμα</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- We use Jinja2 templating to render dynamic content -->
+    <nav>
+        <h1>CityOps Dashboard</h1>
+        <div>
+            {% if session.get('user_id') %}
+                <span>Χρήστης: {{ session.get('name') }}</span>
+                <a href="{{ url_for('logout') }}">Έξοδος</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- This is the div for the messages that are appeared -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-msg {{ 'flash-error' if category == 'error' else '' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %} <!-- Content will be injected here from child templates -->
+    </div>
+</body>
+</html>
